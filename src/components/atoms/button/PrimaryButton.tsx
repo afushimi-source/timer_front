@@ -1,13 +1,15 @@
 import { memo, VFC, ReactNode } from "react";
 import { Button } from "@chakra-ui/react";
-import _ from "lodash";
+import { useRecoilValue } from "recoil";
+
+import { loadingState } from "globalState/atoms/loadingAtom";
 
 type Props = {
   children: ReactNode;
-  loading?: boolean;
 };
 export const PrimaryButton: VFC<Props> = memo((props) => {
-  const { children, loading = false } = props;
+  const loading = useRecoilValue(loadingState);
+  const { children } = props;
   return (
     <Button
       type="submit"

@@ -8,11 +8,12 @@ import { useAuth } from "hooks/useAuth";
 import { FormWrapper } from "components/molecules/FormWrapper";
 import { SignUpUser } from "types/api/signUpUser";
 import { RightLink } from "components/atoms/link/RightLink";
-import { useLoginUser } from "hooks/providers/useAuthProvider";
+import { useRecoilValue } from "recoil";
+import { isLoginState } from "globalState/atoms/isLoginAtom";
 
-export const Signup = () => {
+export const Sighup = () => {
   const { signup } = useAuth();
-  const { isLogin } = useLoginUser();
+  const isLogin = useRecoilValue(isLoginState);
   const history = useHistory();
   const {
     register,

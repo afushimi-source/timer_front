@@ -1,14 +1,7 @@
-import { memo, VFC, ChangeEvent, useState, useCallback } from "react";
+import { memo, VFC, useCallback } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import {
-  Flex,
-  Input,
-  Stack,
-  Link,
-  FormControl,
-  FormErrorMessage,
-} from "@chakra-ui/react";
+import { Input, Stack, FormControl, FormErrorMessage } from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 
 import { PrimaryButton } from "../atoms/button/PrimaryButton";
@@ -16,14 +9,12 @@ import { useAuth } from "../../hooks/useAuth";
 import { FormWrapper } from "../molecules/FormWrapper";
 import { RightLink } from "../atoms/link/RightLink";
 import { LoginUser } from "types/api/loginUser";
-import { useLoginUser } from "hooks/providers/useAuthProvider";
-import { loadingState } from "globalState/atoms/loadingAtom";
+import { isLoginState } from "globalState/atoms/isLoginAtom";
 
 export const Login: VFC = memo(() => {
   const history = useHistory();
-  const { isLogin } = useLoginUser();
+  const isLogin = useRecoilValue(isLoginState);
   const { login } = useAuth();
-  const loading = useRecoilValue(loadingState);
   const {
     register,
     handleSubmit,
@@ -38,7 +29,7 @@ export const Login: VFC = memo(() => {
     login(login_params);
     isLogin && reset();
   };
-  const onClickSignup = useCallback(() => history.push("/signup"), []);
+  const onClickSignup = useCallback(() => history.push("/signup"), [history]);
 
   return (
     <FormWrapper>
@@ -74,7 +65,7 @@ export const Login: VFC = memo(() => {
             />
             <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
           </FormControl>
-          <PrimaryButton loading={loading}>ログイン</PrimaryButton>
+          <PrimaryButton>ログイン</PrimaryButton>
           <RightLink onClick={onClickSignup}>ユーザー登録画面へ</RightLink>
         </Stack>
       </form>

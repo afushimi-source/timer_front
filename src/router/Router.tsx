@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 
 import { Login } from "../components/pages/Login";
-import { Signup } from "../components/pages/Signup";
+import { Sighup } from "../components/pages/Signup";
 import { Page404 } from "../components/pages/Page404";
 import { HeaderLayout } from "../components/templates/HeaderLayout";
 import { homeRoutes } from "./HomeRouters";
@@ -20,7 +20,7 @@ export const Router = () => {
         <Login />
       </Route>
       <Route exact path="/signup">
-        <Signup />
+        <Sighup />
       </Route>
       <Route
         path="/home"

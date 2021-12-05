@@ -1,22 +1,12 @@
-import { memo, VFC, ChangeEvent, useState, useCallback } from "react";
+import { memo, VFC } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useHistory } from "react-router-dom";
-import {
-  Flex,
-  Input,
-  Stack,
-  Link,
-  FormControl,
-  FormErrorMessage,
-} from "@chakra-ui/react";
+import { Input, Stack, FormControl, FormErrorMessage } from "@chakra-ui/react";
 
-import { PrimaryButton } from "../../atoms/button/PrimaryButton";
-import { FormWrapper } from "../../molecules/FormWrapper";
-import { Timer } from "../../../types/api/timer";
-import { useLoginUser } from "hooks/providers/useAuthProvider";
+import { PrimaryButton } from "components/atoms/button/PrimaryButton";
+import { FormWrapper } from "components/molecules/FormWrapper";
+import { Timer } from "types/api/timer";
 
 export const Setting: VFC = memo(() => {
-  const { loading } = useLoginUser();
   const {
     register,
     handleSubmit,
@@ -28,7 +18,6 @@ export const Setting: VFC = memo(() => {
     shouldFocusError: false,
   });
   const onSubmitLoginUser: SubmitHandler<Timer> = (timerParams) => {
-    // setTime(timerParams);
     reset();
   };
   return (
@@ -64,7 +53,7 @@ export const Setting: VFC = memo(() => {
             />
             <FormErrorMessage>{errors?.break_time?.message}</FormErrorMessage>
           </FormControl>
-          <PrimaryButton loading={loading}>ログイン</PrimaryButton>
+          <PrimaryButton>ログイン</PrimaryButton>
         </Stack>
       </form>
     </FormWrapper>
