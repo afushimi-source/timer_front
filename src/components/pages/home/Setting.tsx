@@ -10,44 +10,38 @@ import {
   FormErrorMessage,
 } from "@chakra-ui/react";
 
-import { PrimaryButton } from "../atoms/button/PrimaryButton";
-import { useAuth } from "../../hooks/useAuth";
-import { FormWrapper } from "../molecules/FormWrapper";
-import { RightLink } from "../atoms/link/RightLink";
-import { LoginUser } from "types/api/loginUser";
+import { PrimaryButton } from "../../atoms/button/PrimaryButton";
+import { FormWrapper } from "../../molecules/FormWrapper";
+import { Timer } from "../../../types/api/timer";
 import { useLoginUser } from "hooks/providers/useAuthProvider";
 
-export const Login: VFC = memo(() => {
-  const history = useHistory();
-  const { isLogin } = useLoginUser();
-  const { login, loading } = useAuth();
+export const Setting: VFC = memo(() => {
+  const { loading } = useLoginUser();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<LoginUser>({
+  } = useForm<Timer>({
     mode: "onBlur",
     criteriaMode: "all",
     shouldFocusError: false,
   });
-  const onSubmitLoginUser: SubmitHandler<LoginUser> = (login_params) => {
-    login(login_params);
-    isLogin && reset();
+  const onSubmitLoginUser: SubmitHandler<Timer> = (timerParams) => {
+    // setTime(timerParams);
+    reset();
   };
-  const onClickSignup = useCallback(() => history.push("/signup"), []);
-
   return (
     <FormWrapper>
       <form onSubmit={handleSubmit(onSubmitLoginUser)}>
         <Stack spacing={6} py={4} px={10}>
-          <FormControl isInvalid={!!errors?.email}>
+          <FormControl isInvalid={!!errors?.study_time}>
             <Input
-              placeholder="メールアドレス"
-              {...register("email", {
+              placeholder="計測時間"
+              {...register("study_time", {
                 required: {
                   value: true,
-                  message: "emailは必須項目です",
+                  message: "計測時間は必須項目です",
                 },
                 pattern: {
                   value:
@@ -56,23 +50,21 @@ export const Login: VFC = memo(() => {
                 },
               })}
             />
-            <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.study_time?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={!!errors?.password}>
+          <FormControl isInvalid={!!errors?.study_time}>
             <Input
-              type="password"
-              placeholder="パスワード"
-              {...register("password", {
+              placeholder="休息時間"
+              {...register("break_time", {
                 required: {
                   value: true,
-                  message: "passwordは必須項目です",
+                  message: "休息時間は必須項目です",
                 },
               })}
             />
-            <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.break_time?.message}</FormErrorMessage>
           </FormControl>
           <PrimaryButton loading={loading}>ログイン</PrimaryButton>
-          <RightLink onClick={onClickSignup}>ユーザー登録画面へ</RightLink>
         </Stack>
       </form>
     </FormWrapper>

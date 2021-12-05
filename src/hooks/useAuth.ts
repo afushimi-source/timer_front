@@ -1,53 +1,107 @@
-import { useCallback, useState } from 'react'
-import axios from 'axios'
-import { useHistory } from 'react-router-dom'
+import { useCallback } from "react";
+import Cookies from "js-cookie";
+import { useHistory } from "react-router-dom";
 
-import { useMessage } from './useMessage'
-import { useLoginUser } from './providers/useLoginUserProvider'
+import { LoginUser } from "types/api/loginUser";
+import { SignUpUser } from "types/api/signUpUser";
+import { useMessage } from "./useMessage";
+import { useLoginUser } from "./providers/useAuthProvider";
+import client from "lib/api/client";
 
 export const useAuth = () => {
-  axios.defaults.baseURL = process.env.REACT_APP_DEV_API_URL
-  const { showMessage } = useMessage()
-  const { setLoginUser } = useLoginUser()
-  const history = useHistory()
-  const [loading, setLoading] = useState(false)
+  const { showMessage } = useMessage();
+  const { setCurrentUser, setIsLogin, setLoading, loading, isLogin } =
+    useLoginUser();
+  const history = useHistory();
 
-  const signup = useCallback(() => {}, [])
-
-  const login = useCallback(
-    (email: string, password: string): boolean => {
-      setLoading(true)
-      let result = false
-      axios
-        .post(
-          'http://localhost:3001/login',
-          {
-            user: {
-              email: email,
-              password: password,
-            },
-          },
-          { withCredentials: true },
-        )
+  const signup = useCallback(
+    (signupParams: SignUpUser) => {
+      setLoading(true);
+      client
+        .post("auth", signupParams)
         .then((res) => {
-          if (res.data.status === 200) {
-            result = true
-            setLoginUser(res.data.user)
-            showMessage({ title: 'ログインしました', status: 'success' })
-            history.push('/home') //ログイン後の画面推移
+          console.log(res);
+          if (res.status === 200) {
+            setCurrentUser(res.data.user);
+            showMessage({
+              title: "ユーザー登録に成功しました",
+              status: "success",
+            });
+            history.push("/home/setting");
           } else {
-            showMessage({ title: res.data.errors.join(''), status: 'error' })
+            showMessage({ title: res.data.errors.join(""), status: "error" });
           }
-          setLoading(false)
+          setLoading(false);
         })
         .catch(() => {
-          console.log('err')
-          showMessage({ title: 'ログインできません', status: 'error' })
-          setLoading(false)
-        })
-      return result
+          showMessage({
+            title: "サーバーエラーのため登録できません。",
+            status: "error",
+          });
+          setLoading(false);
+        });
     },
-    [history, showMessage, setLoginUser],
-  )
-  return { signup, login, loading }
-}
+    [history, setLoading, setCurrentUser, showMessage],
+  );
+
+  const login = useCallback(
+    (params: LoginUser) => {
+      setLoading(true);
+      client
+        .post("auth/sign_in", params)
+        .then((res) => {
+          if (res.status === 200) {
+            Cookies.set("_access_token", res.headers["access-token"]);
+            Cookies.set("_client", res.headers["client"]);
+            Cookies.set("_uid", res.headers["uid"]);
+            setCurrentUser(res.data.user);
+            setIsLogin(true);
+            showMessage({ title: "ログインしました", status: "success" });
+            history.push("/home");
+          } else {
+            showMessage({ title: res.data.errors.join(""), status: "error" });
+          }
+          setLoading(false);
+        })
+        .catch(() => {
+          showMessage({ title: "ログインできません", status: "error" });
+          setLoading(false);
+        });
+    },
+    [history, showMessage, setCurrentUser, setLoading, setIsLogin],
+  );
+
+  // const updateProfile = useCallback((user_params: User) => {
+  // }, [])
+
+  const getCurrentUser = useCallback(() => {
+    if (
+      !Cookies.get("_access_token") ||
+      !Cookies.get("_client") ||
+      !Cookies.get("_uid")
+    )
+      return;
+
+    client
+      .get("auth/sessions", {
+        headers: {
+          "access-token": Cookies.get("_access_token")!,
+          client: Cookies.get("_client")!,
+          uid: Cookies.get("_uid")!,
+        },
+      })
+      .then((res) => {
+        if (res.data.isLogin === true) {
+          console.log(isLogin);
+          setCurrentUser(res.data.data);
+          setIsLogin(true);
+          console.log(isLogin);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  return { signup, login, getCurrentUser, loading };
+};

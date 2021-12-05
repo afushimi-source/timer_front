@@ -1,6 +1,10 @@
 export type User = {
-  name: string
-  email: string
-  password: string
-  password_confirmation: string
-}
+  id: number;
+  uid: string;
+  provider: string;
+  email: string;
+  nickname: string;
+  allowPasswordChange: boolean;
+  created_at: Date;
+  updated_at: Date;
+};
