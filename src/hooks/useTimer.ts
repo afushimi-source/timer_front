@@ -19,11 +19,12 @@ export const useTimer = () => {
         headers: cookiesHeader,
       })
       .then((res) => {
+        console.log(res);
         if (res.status === 200) {
           if (res.data != null) {
             setTimer({
-              study_time: res.data.study_time,
-              break_time: res.data.study_time,
+              studyTime: res.data.studyTime,
+              breakTime: res.data.breakTime,
             });
           }
         }
@@ -37,8 +38,8 @@ export const useTimer = () => {
         .then((res) => {
           if (res.status === 200) {
             setTimer({
-              study_time: res.data.study_time,
-              break_time: res.data.study_time,
+              studyTime: res.data.studyTime,
+              breakTime: res.data.breakTime,
             });
             showMessage({ title: "設定に成功しました", status: "success" });
             history.push("/home");

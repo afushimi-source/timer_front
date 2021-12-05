@@ -1,30 +1,30 @@
-import { VFC, memo } from "react";
+import { VFC, memo, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRecoilValue } from "recoil";
 
 import { FormWrapper } from "../../molecules/FormWrapper";
 import { userNameState } from "globalState/atoms/userNameAtom";
 import { isLoginState } from "globalState/atoms/isLoginAtom";
-import { cookiesHeader } from "lib/api/cookiesHeader";
-
-//test
-import client from "lib/api/client";
+import { useTimer } from "hooks/useTimer";
+import { timerState } from "globalState/atoms/timerAtom";
 
 export const Home: VFC = memo(() => {
-  client
-    .get("timers", {
-      headers: cookiesHeader,
-    })
-    .then((res) => {
-      console.log(res.data);
-    });
+  const { getTimer } = useTimer();
   const username = useRecoilValue(userNameState);
   const login = useRecoilValue(isLoginState);
+  const timerValue = useRecoilValue(timerState);
   console.log(username, login);
+  console.log(timerValue);
+
+  useEffect(() => {
+    getTimer();
+  }, [getTimer]);
   return (
     <FormWrapper>
       <p>{login && "login!"}</p>
       <p>{username}</p>
+      <p>{timerValue.studyTime}</p>
+      <p>{timerValue.breakTime}</p>
       <p>{Cookies.get("_access_token")}</p>
       <p>{Cookies.get("_client")}</p>
       <p>{Cookies.get("_uid")}</p>

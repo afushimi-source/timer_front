@@ -1,4 +1,4 @@
 export type Timer = {
-  study_time: number;
-  break_time: number;
+  studyTime: number;
+  breakTime: number;
 };

@@ -17,7 +17,7 @@ import { useTimer } from "hooks/useTimer";
 import { timerState } from "globalState/atoms/timerAtom";
 
 export const Setting: VFC = memo(() => {
-  const default_timer = useRecoilValue(timerState);
+  const timerValue = useRecoilValue(timerState);
   const { getTimer, postTimer } = useTimer();
   const {
     register,
@@ -39,13 +39,13 @@ export const Setting: VFC = memo(() => {
     <FormWrapper>
       <form onSubmit={handleSubmit(onSubmitLoginUser)}>
         <Stack spacing={6} py={4} px={10}>
-          <FormControl isInvalid={!!errors?.study_time}>
+          <FormControl isInvalid={!!errors?.studyTime}>
             <FormLabel>計測時間 (分 / min)</FormLabel>
             <Input
-              defaultValue={default_timer.study_time}
+              defaultValue={timerValue.studyTime}
               // type="number"
               placeholder="計測時間 (分 / min)"
-              {...register("study_time", {
+              {...register("studyTime", {
                 required: {
                   value: true,
                   message: "計測時間は必須項目です",
@@ -53,22 +53,22 @@ export const Setting: VFC = memo(() => {
               })}
             />
             <FormHelperText>おすすめな設定は25分計測 / 5分休憩</FormHelperText>
-            <FormErrorMessage>{errors?.study_time?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.studyTime?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={!!errors?.study_time}>
+          <FormControl isInvalid={!!errors?.studyTime}>
             <FormLabel>休息時間 (分 / min)</FormLabel>
             <Input
-              defaultValue={default_timer.break_time}
+              defaultValue={timerValue.breakTime}
               type="number"
               placeholder="休息時間 (分 / min)"
-              {...register("break_time", {
+              {...register("breakTime", {
                 required: {
                   value: true,
                   message: "休息時間は必須項目です",
                 },
               })}
             />
-            <FormErrorMessage>{errors?.break_time?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors?.breakTime?.message}</FormErrorMessage>
           </FormControl>
           <PrimaryButton>設定</PrimaryButton>
         </Stack>
