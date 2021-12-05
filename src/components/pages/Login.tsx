@@ -9,6 +9,7 @@ import {
   FormControl,
   FormErrorMessage,
 } from "@chakra-ui/react";
+import { useRecoilValue } from "recoil";
 
 import { PrimaryButton } from "../atoms/button/PrimaryButton";
 import { useAuth } from "../../hooks/useAuth";
@@ -16,11 +17,13 @@ import { FormWrapper } from "../molecules/FormWrapper";
 import { RightLink } from "../atoms/link/RightLink";
 import { LoginUser } from "types/api/loginUser";
 import { useLoginUser } from "hooks/providers/useAuthProvider";
+import { loadingState } from "globalState/atoms/loadingAtom";
 
 export const Login: VFC = memo(() => {
   const history = useHistory();
   const { isLogin } = useLoginUser();
-  const { login, loading } = useAuth();
+  const { login } = useAuth();
+  const loading = useRecoilValue(loadingState);
   const {
     register,
     handleSubmit,

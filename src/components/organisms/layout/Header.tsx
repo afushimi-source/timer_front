@@ -1,11 +1,14 @@
-import { memo, VFC } from 'react'
-import { Flex, Heading, Box, Link, useDisclosure } from '@chakra-ui/react'
+import { memo, VFC } from "react";
+import { Flex, Heading, Box, Link, useDisclosure } from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
 
-import { MenuIconButton } from '../../atoms/button/MenuIconButton'
-import { MenuDrawer } from '../../molecules/MenuDrawer'
+import { MenuIconButton } from "../../atoms/button/MenuIconButton";
+import { MenuDrawer } from "../../molecules/MenuDrawer";
 
 export const Header: VFC = memo(() => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const history = useHistory();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const onClickRoot = () => history.push("/");
   return (
     <>
       <Flex
@@ -16,8 +19,14 @@ export const Header: VFC = memo(() => {
         justify="space-between"
         padding={{ base: 3, md: 5 }}
       >
-        <Flex align="center" as="a" mr={8} _hover={{ cursor: 'pointer' }}>
-          <Heading as="h1" fontSize={{ base: 'md', md: 'lg' }}>
+        <Flex
+          align="center"
+          as="a"
+          mr={8}
+          _hover={{ cursor: "pointer" }}
+          onClick={onClickRoot}
+        >
+          <Heading as="h1" fontSize={{ base: "md", md: "lg" }}>
             Timer
           </Heading>
         </Flex>
@@ -25,7 +34,7 @@ export const Header: VFC = memo(() => {
           align="center"
           fontSize="sm"
           flexGrow={2}
-          display={{ base: 'none', md: 'flex' }}
+          display={{ base: "none", md: "flex" }}
         >
           <Box pr={4}>
             <Link>test</Link>
@@ -36,5 +45,5 @@ export const Header: VFC = memo(() => {
       </Flex>
       <MenuDrawer onClose={onClose} isOpen={isOpen} />
     </>
-  )
-})
+  );
+});

@@ -1,15 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { memo, VFC, ChangeEvent, useState, useCallback } from "react";
+import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  Button,
-  Flex,
-  Input,
-  Stack,
-  Link,
-  FormControl,
-  FormErrorMessage,
-} from "@chakra-ui/react";
+import { Input, Stack, FormControl, FormErrorMessage } from "@chakra-ui/react";
 
 import { PrimaryButton } from "components/atoms/button/PrimaryButton";
 import { useAuth } from "hooks/useAuth";
@@ -19,7 +11,7 @@ import { RightLink } from "components/atoms/link/RightLink";
 import { useLoginUser } from "hooks/providers/useAuthProvider";
 
 export const Signup = () => {
-  const { signup, loading } = useAuth();
+  const { signup } = useAuth();
   const { isLogin } = useLoginUser();
   const history = useHistory();
   const {

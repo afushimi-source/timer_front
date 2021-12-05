@@ -1,17 +1,22 @@
 import { useCallback } from "react";
 import Cookies from "js-cookie";
 import { useHistory } from "react-router-dom";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 import { LoginUser } from "types/api/loginUser";
 import { SignUpUser } from "types/api/signUpUser";
 import { useMessage } from "./useMessage";
-import { useLoginUser } from "./providers/useAuthProvider";
 import client from "lib/api/client";
+import { userNameState } from "globalState/atoms/userNameAtom";
+import { isLoginState } from "globalState/atoms/isLoginAtom";
+import { loadingState } from "globalState/atoms/loadingAtom";
 
 export const useAuth = () => {
   const { showMessage } = useMessage();
-  const { setCurrentUser, setIsLogin, setLoading, loading, isLogin } =
-    useLoginUser();
+  // const { setCurrentUser, setIsLogin, setLoading } = useLoginUser();
+  const setUserName = useSetRecoilState(userNameState);
+  const [isLogin, setIsLogin] = useRecoilState(isLoginState);
+  const setLoading = useSetRecoilState(loadingState);
   const history = useHistory();
 
   const signup = useCallback(
@@ -22,12 +27,13 @@ export const useAuth = () => {
         .then((res) => {
           console.log(res);
           if (res.status === 200) {
-            setCurrentUser(res.data.user);
+            setIsLogin(true);
+            setUserName(res.data.user.nickname);
             showMessage({
               title: "ユーザー登録に成功しました",
               status: "success",
             });
-            history.push("/home/setting");
+            history.push("/home");
           } else {
             showMessage({ title: res.data.errors.join(""), status: "error" });
           }
@@ -41,7 +47,7 @@ export const useAuth = () => {
           setLoading(false);
         });
     },
-    [history, setLoading, setCurrentUser, showMessage],
+    [history, setLoading, setUserName, setIsLogin, showMessage],
   );
 
   const login = useCallback(
@@ -54,7 +60,7 @@ export const useAuth = () => {
             Cookies.set("_access_token", res.headers["access-token"]);
             Cookies.set("_client", res.headers["client"]);
             Cookies.set("_uid", res.headers["uid"]);
-            setCurrentUser(res.data.user);
+            setUserName(res.data.user.nickname);
             setIsLogin(true);
             showMessage({ title: "ログインしました", status: "success" });
             history.push("/home");
@@ -68,20 +74,21 @@ export const useAuth = () => {
           setLoading(false);
         });
     },
-    [history, showMessage, setCurrentUser, setLoading, setIsLogin],
+    [history, showMessage, setUserName, setLoading, setIsLogin],
   );
 
   // const updateProfile = useCallback((user_params: User) => {
   // }, [])
 
-  const getCurrentUser = useCallback(() => {
+  const checkLogin = useCallback(() => {
     if (
+      isLogin ||
       !Cookies.get("_access_token") ||
       !Cookies.get("_client") ||
       !Cookies.get("_uid")
     )
       return;
-
+    console.log("check!");
     client
       .get("auth/sessions", {
         headers: {
@@ -92,16 +99,18 @@ export const useAuth = () => {
       })
       .then((res) => {
         if (res.data.isLogin === true) {
-          console.log(isLogin);
-          setCurrentUser(res.data.data);
+          console.log(res.data.data);
+          setUserName(res.data.data.nickname);
           setIsLogin(true);
-          console.log(isLogin);
+        } else {
+          history.push("/");
         }
       })
       .catch((err) => {
+        history.push("/");
         console.log(err);
       });
-  }, []);
+  }, [setIsLogin, isLogin, history, setUserName]);
 
-  return { signup, login, getCurrentUser, loading };
+  return { signup, login, checkLogin };
 };

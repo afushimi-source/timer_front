@@ -29,30 +29,36 @@ export const AuthProvider = (props: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | undefined>();
-  console.log(`isLogin: ${isLogin}`);
+  // console.log(`isLogin: ${isLogin}`);
 
   // const { getCurrentUser } = useAuth()
-  // const handleGetCurrentUser = () => {
-  //   if (!Cookies.get("_access_token") || !Cookies.get("_client") || !Cookies.get("_uid")) return
+  const handleGetCurrentUser = () => {
+    if (
+      !Cookies.get("_access_token") ||
+      !Cookies.get("_client") ||
+      !Cookies.get("_uid")
+    )
+      return;
 
-  //   client.get("auth/sessions", {
-  //     headers: {
-  //       "access-token": Cookies.get("_access_token")!,
-  //       "client": Cookies.get("_client")!,
-  //       "uid": Cookies.get("_uid")!
-  //     }
-  //   })
-  //     .then(res => {
-  //       if (res.data.isLogin === true) {
-  //         setIsLogin(true)
-  //         setCurrentUser(res.data.data)
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err)
-  //     })
-  //   setLoading(false)
-  // }
+    client
+      .get("auth/sessions", {
+        headers: {
+          "access-token": Cookies.get("_access_token")!,
+          client: Cookies.get("_client")!,
+          uid: Cookies.get("_uid")!,
+        },
+      })
+      .then((res) => {
+        if (res.data.isLogin === true) {
+          setIsLogin(true);
+          setCurrentUser(res.data.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setLoading(false);
+  };
 
   // useEffect(() => {
   //   handleGetCurrentUser()
