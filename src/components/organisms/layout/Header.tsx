@@ -8,7 +8,10 @@ import { MenuDrawer } from "../../molecules/MenuDrawer";
 export const Header: VFC = memo(() => {
   const history = useHistory();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const onClickRoot = () => history.push("/");
+  const onClickHome = () => history.push("/home");
+  const onClickLog = () => history.push("/home/log");
+  const onClickUsage = () => history.push("/home/usage");
+  const onClickSetting = () => history.push("/home/setting");
   return (
     <>
       <Flex
@@ -24,7 +27,7 @@ export const Header: VFC = memo(() => {
           as="a"
           mr={8}
           _hover={{ cursor: "pointer" }}
-          onClick={onClickRoot}
+          onClick={onClickHome}
         >
           <Heading as="h1" fontSize={{ base: "md", md: "lg" }}>
             Timer
@@ -37,9 +40,15 @@ export const Header: VFC = memo(() => {
           display={{ base: "none", md: "flex" }}
         >
           <Box pr={4}>
-            <Link>test</Link>
+            <Link onClick={onClickHome}>ホーム</Link>
           </Box>
-          <Link>tes2</Link>
+          <Box pr={4}>
+            <Link onClick={onClickLog}>記録</Link>
+          </Box>
+          <Box pr={4}>
+            <Link onClick={onClickUsage}>使い方</Link>
+          </Box>
+          <Link onClick={onClickSetting}>設定</Link>
         </Flex>
         <MenuIconButton onOpen={onOpen} />
       </Flex>

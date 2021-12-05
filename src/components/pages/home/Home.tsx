@@ -5,9 +5,19 @@ import { useRecoilValue } from "recoil";
 import { FormWrapper } from "../../molecules/FormWrapper";
 import { userNameState } from "globalState/atoms/userNameAtom";
 import { isLoginState } from "globalState/atoms/isLoginAtom";
+import { cookiesHeader } from "lib/api/cookiesHeader";
+
+//test
+import client from "lib/api/client";
 
 export const Home: VFC = memo(() => {
-  // const { isLogin, currentUser } = useLoginUser();
+  client
+    .get("timers", {
+      headers: cookiesHeader,
+    })
+    .then((res) => {
+      console.log(res.data);
+    });
   const username = useRecoilValue(userNameState);
   const login = useRecoilValue(isLoginState);
   console.log(username, login);

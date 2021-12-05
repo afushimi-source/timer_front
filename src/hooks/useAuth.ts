@@ -10,6 +10,7 @@ import client from "lib/api/client";
 import { userNameState } from "globalState/atoms/userNameAtom";
 import { isLoginState } from "globalState/atoms/isLoginAtom";
 import { loadingState } from "globalState/atoms/loadingAtom";
+import { cookiesHeader } from "lib/api/cookiesHeader";
 
 export const useAuth = () => {
   const { showMessage } = useMessage();
@@ -19,12 +20,11 @@ export const useAuth = () => {
   const history = useHistory();
 
   const signup = useCallback(
-    (signupParams: SignUpUser) => {
+    (params: SignUpUser) => {
       setLoading(true);
       client
-        .post("auth", signupParams)
+        .post("auth", params)
         .then((res) => {
-          console.log(res.data);
           if (res.status === 200) {
             Cookies.set("_access_token", res.headers["access-token"]);
             Cookies.set("_client", res.headers["client"]);
@@ -58,7 +58,6 @@ export const useAuth = () => {
       client
         .post("auth/sign_in", params)
         .then((res) => {
-          console.log(res.data);
           if (res.status === 200) {
             Cookies.set("_access_token", res.headers["access-token"]);
             Cookies.set("_client", res.headers["client"]);
@@ -73,7 +72,6 @@ export const useAuth = () => {
           setLoading(false);
         })
         .catch(() => {
-          console.log("not login");
           showMessage({ title: "ログインできません", status: "error" });
           setLoading(false);
         });
@@ -89,27 +87,21 @@ export const useAuth = () => {
       !Cookies.get("_uid")
     )
       return;
-    console.log("check!");
     client
       .get("auth/sessions", {
-        headers: {
-          "access-token": Cookies.get("_access_token")!,
-          client: Cookies.get("_client")!,
-          uid: Cookies.get("_uid")!,
-        },
+        headers: cookiesHeader,
       })
       .then((res) => {
         if (res.data.isLogin === true) {
-          console.log(res.data.data);
           setUserName(res.data.data.nickname);
           setIsLogin(true);
+          // history.push("/home");
         } else {
           history.push("/");
         }
       })
       .catch((err) => {
         history.push("/");
-        console.log(err);
       });
   }, [setIsLogin, isLogin, history, setUserName]);
 
