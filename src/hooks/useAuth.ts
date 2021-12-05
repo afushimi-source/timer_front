@@ -13,7 +13,6 @@ import { loadingState } from "globalState/atoms/loadingAtom";
 
 export const useAuth = () => {
   const { showMessage } = useMessage();
-  // const { setCurrentUser, setIsLogin, setLoading } = useLoginUser();
   const setUserName = useSetRecoilState(userNameState);
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
   const setLoading = useSetRecoilState(loadingState);
@@ -25,10 +24,13 @@ export const useAuth = () => {
       client
         .post("auth", signupParams)
         .then((res) => {
-          console.log(res);
+          console.log(res.data);
           if (res.status === 200) {
+            Cookies.set("_access_token", res.headers["access-token"]);
+            Cookies.set("_client", res.headers["client"]);
+            Cookies.set("_uid", res.headers["uid"]);
             setIsLogin(true);
-            setUserName(res.data.user.nickname);
+            setUserName(res.data.data.nickname);
             showMessage({
               title: "ユーザー登録に成功しました",
               status: "success",
@@ -56,11 +58,12 @@ export const useAuth = () => {
       client
         .post("auth/sign_in", params)
         .then((res) => {
+          console.log(res.data);
           if (res.status === 200) {
             Cookies.set("_access_token", res.headers["access-token"]);
             Cookies.set("_client", res.headers["client"]);
             Cookies.set("_uid", res.headers["uid"]);
-            setUserName(res.data.user.nickname);
+            setUserName(res.data.data.nickname);
             setIsLogin(true);
             showMessage({ title: "ログインしました", status: "success" });
             history.push("/home");
@@ -70,15 +73,13 @@ export const useAuth = () => {
           setLoading(false);
         })
         .catch(() => {
+          console.log("not login");
           showMessage({ title: "ログインできません", status: "error" });
           setLoading(false);
         });
     },
     [history, showMessage, setUserName, setLoading, setIsLogin],
   );
-
-  // const updateProfile = useCallback((user_params: User) => {
-  // }, [])
 
   const checkLogin = useCallback(() => {
     if (

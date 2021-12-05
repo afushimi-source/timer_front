@@ -20,11 +20,7 @@ export const Login: VFC = memo(() => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<LoginUser>({
-    mode: "onBlur",
-    criteriaMode: "all",
-    shouldFocusError: false,
-  });
+  } = useForm<LoginUser>({});
   const onSubmitLoginUser: SubmitHandler<LoginUser> = (login_params) => {
     login(login_params);
     isLogin && reset();
@@ -57,9 +53,10 @@ export const Login: VFC = memo(() => {
               type="password"
               placeholder="パスワード"
               {...register("password", {
-                required: {
-                  value: true,
-                  message: "passwordは必須項目です",
+                required: "passwordは必須項目です",
+                minLength: {
+                  value: 6,
+                  message: "パスワードは6文字以上で設定してください",
                 },
               })}
             />

@@ -43,10 +43,7 @@ export const Sighup = () => {
             <Input
               placeholder="ニックネーム"
               {...register("nickname", {
-                required: {
-                  value: true,
-                  message: "ニックネームは必須項目です",
-                },
+                required: "ニックネームは必須項目です",
               })}
             />
             <FormErrorMessage>{errors?.nickname?.message}</FormErrorMessage>
@@ -55,10 +52,7 @@ export const Sighup = () => {
             <Input
               placeholder="メールアドレス"
               {...register("email", {
-                required: {
-                  value: true,
-                  message: "メールアドレスは必須項目です",
-                },
+                required: "メールアドレスは必須項目です",
                 pattern: {
                   value:
                     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
@@ -73,10 +67,7 @@ export const Sighup = () => {
               type="password"
               placeholder="パスワード"
               {...register("password", {
-                required: {
-                  value: true,
-                  message: "パスワードは必須項目です",
-                },
+                required: "パスワードは必須項目です",
                 minLength: {
                   value: 6,
                   message: "パスワードは6文字以上で設定してください",
@@ -95,10 +86,7 @@ export const Sighup = () => {
                     input === getValues("password") ||
                     "パスワードと値が一致しません",
                 },
-                required: {
-                  value: true,
-                  message: "パスワード（確認）は必須項目です",
-                },
+                required: "パスワード（確認）は必須項目です",
               })}
             />
             <FormErrorMessage>
