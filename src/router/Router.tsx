@@ -10,6 +10,7 @@ import { useAuth } from "hooks/useAuth";
 
 export const Router = () => {
   const { checkLogin } = useAuth();
+
   useEffect(() => {
     checkLogin();
   });

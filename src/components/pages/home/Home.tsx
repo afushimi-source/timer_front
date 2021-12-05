@@ -18,7 +18,7 @@ export const Home: VFC = memo(() => {
 
   useEffect(() => {
     getTimer();
-  }, [getTimer]);
+  }, []);
   return (
     <FormWrapper>
       <p>{login && "login!"}</p>

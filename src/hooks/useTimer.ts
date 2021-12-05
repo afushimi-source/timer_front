@@ -19,7 +19,6 @@ export const useTimer = () => {
         headers: cookiesHeader,
       })
       .then((res) => {
-        console.log(res);
         if (res.status === 200) {
           if (res.data != null) {
             setTimer({
@@ -28,6 +27,9 @@ export const useTimer = () => {
             });
           }
         }
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }, [setTimer]);
 

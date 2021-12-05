@@ -1,4 +1,4 @@
-import { memo, VFC, useEffect } from "react";
+import { memo, VFC, useLayoutEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
   Input,
@@ -17,23 +17,31 @@ import { useTimer } from "hooks/useTimer";
 import { timerState } from "globalState/atoms/timerAtom";
 
 export const Setting: VFC = memo(() => {
-  const timerValue = useRecoilValue(timerState);
   const { getTimer, postTimer } = useTimer();
+  const timer = useRecoilValue(timerState);
+  console.log(timer);
+
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<Timer>({});
+
   const onSubmitLoginUser: SubmitHandler<Timer> = (params) => {
-    console.log(params);
     postTimer(params);
     reset();
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     getTimer();
-  });
+  }, []);
+
+  useLayoutEffect(() => {
+    setValue("studyTime", timer.studyTime);
+    setValue("breakTime", timer.breakTime);
+  }, [timer]);
 
   return (
     <FormWrapper>
@@ -42,8 +50,8 @@ export const Setting: VFC = memo(() => {
           <FormControl isInvalid={!!errors?.studyTime}>
             <FormLabel>計測時間 (分 / min)</FormLabel>
             <Input
-              defaultValue={timerValue.studyTime}
-              // type="number"
+              // defaultValue={timerValue.studyTime}
+              type="number"
               placeholder="計測時間 (分 / min)"
               {...register("studyTime", {
                 required: {
@@ -58,7 +66,7 @@ export const Setting: VFC = memo(() => {
           <FormControl isInvalid={!!errors?.studyTime}>
             <FormLabel>休息時間 (分 / min)</FormLabel>
             <Input
-              defaultValue={timerValue.breakTime}
+              // defaultValue={timerValue.breakTime}
               type="number"
               placeholder="休息時間 (分 / min)"
               {...register("breakTime", {
