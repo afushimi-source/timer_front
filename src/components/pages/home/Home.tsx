@@ -7,8 +7,10 @@ import { userNameState } from "globalState/atoms/userNameAtom";
 import { isLoginState } from "globalState/atoms/isLoginAtom";
 import { useTimer } from "hooks/useTimer";
 import { timerState } from "globalState/atoms/timerAtom";
+import { useAuth } from "hooks/useAuth";
 
 export const Home: VFC = memo(() => {
+  const { checkLogin } = useAuth();
   const { getTimer } = useTimer();
   const username = useRecoilValue(userNameState);
   const login = useRecoilValue(isLoginState);
@@ -17,6 +19,7 @@ export const Home: VFC = memo(() => {
   console.log(timerValue);
 
   useEffect(() => {
+    checkLogin();
     getTimer();
   }, []);
   return (

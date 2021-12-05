@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import Cookies from "js-cookie";
 import { useHistory } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 import { LoginUser } from "types/api/loginUser";
 import { SignUpUser } from "types/api/signUpUser";
@@ -15,7 +15,7 @@ import { cookiesHeader } from "lib/api/cookiesHeader";
 export const useAuth = () => {
   const { showMessage } = useMessage();
   const setUserName = useSetRecoilState(userNameState);
-  const [isLogin, setIsLogin] = useRecoilState(isLoginState);
+  const setIsLogin = useSetRecoilState(isLoginState);
   const setLoading = useSetRecoilState(loadingState);
   const history = useHistory();
 
@@ -59,6 +59,7 @@ export const useAuth = () => {
         .post("auth/sign_in", params)
         .then((res) => {
           if (res.status === 200) {
+            console.log(res.headers);
             Cookies.set("_access_token", res.headers["access-token"]);
             Cookies.set("_client", res.headers["client"]);
             Cookies.set("_uid", res.headers["uid"]);
@@ -79,23 +80,48 @@ export const useAuth = () => {
     [history, showMessage, setUserName, setLoading, setIsLogin],
   );
 
-  const checkLogin = useCallback(() => {
-    if (
-      isLogin ||
-      !Cookies.get("_access_token") ||
-      !Cookies.get("_client") ||
-      !Cookies.get("_uid")
-    )
-      return;
+  const logout = useCallback(() => {
     client
-      .get("auth/sessions", {
-        headers: cookiesHeader,
+      .delete("auth/sign_out", {
+        headers: {
+          "access-token": Cookies.get("_access_token")!,
+          client: Cookies.get("_client")!,
+          uid: Cookies.get("_uid")!,
+        },
       })
       .then((res) => {
+        if (res.status === 200) {
+          Cookies.remove("_access_token");
+          Cookies.remove("_client");
+          Cookies.remove("_uid");
+          showMessage({ title: "ログアウトしました", status: "success" });
+          history.push("/");
+        } else {
+          showMessage({ title: "ログアウトできませんでした", status: "error" });
+        }
+      })
+      .catch((err) => {
+        showMessage({ title: "ログアウトできませんでした", status: "error" });
+        console.log(err);
+      });
+  }, [history, showMessage]);
+
+  const checkLogin = useCallback(() => {
+    console.log("check");
+    console.log(cookiesHeader);
+    client
+      .get("auth/sessions", {
+        headers: {
+          "access-token": Cookies.get("_access_token")!,
+          client: Cookies.get("_client")!,
+          uid: Cookies.get("_uid")!,
+        },
+      })
+      .then((res) => {
+        console.log(res);
         if (res.data.isLogin === true) {
           setUserName(res.data.data.nickname);
           setIsLogin(true);
-          // history.push("/home");
         } else {
           history.push("/");
         }
@@ -103,7 +129,7 @@ export const useAuth = () => {
       .catch((err) => {
         history.push("/");
       });
-  }, [setIsLogin, isLogin, history, setUserName]);
+  }, [history, setIsLogin, setUserName]);
 
-  return { signup, login, checkLogin };
+  return { signup, login, logout, checkLogin };
 };

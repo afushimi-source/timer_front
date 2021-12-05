@@ -1,11 +1,11 @@
 import { useCallback } from "react";
 import { useSetRecoilState } from "recoil";
 import { useHistory } from "react-router-dom";
+import Cookies from "js-cookie";
 
 import { useMessage } from "./useMessage";
 import { timerState } from "globalState/atoms/timerAtom";
 import client from "lib/api/client";
-import { cookiesHeader } from "lib/api/cookiesHeader";
 import { Timer } from "types/api/timer";
 
 export const useTimer = () => {
@@ -16,7 +16,11 @@ export const useTimer = () => {
   const getTimer = useCallback(() => {
     client
       .get("timers", {
-        headers: cookiesHeader,
+        headers: {
+          "access-token": Cookies.get("_access_token")!,
+          client: Cookies.get("_client")!,
+          uid: Cookies.get("_uid")!,
+        },
       })
       .then((res) => {
         if (res.status === 200) {
@@ -36,7 +40,13 @@ export const useTimer = () => {
   const postTimer = useCallback(
     (params: Timer) => {
       client
-        .post("timers", params, { headers: cookiesHeader })
+        .post("timers", params, {
+          headers: {
+            "access-token": Cookies.get("_access_token")!,
+            client: Cookies.get("_client")!,
+            uid: Cookies.get("_uid")!,
+          },
+        })
         .then((res) => {
           if (res.status === 200) {
             setTimer({

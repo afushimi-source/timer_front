@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 
 import { Login } from "../components/pages/Login";
@@ -6,15 +5,8 @@ import { Sighup } from "../components/pages/Signup";
 import { Page404 } from "../components/pages/Page404";
 import { HeaderLayout } from "../components/templates/HeaderLayout";
 import { homeRoutes } from "./HomeRouters";
-import { useAuth } from "hooks/useAuth";
 
 export const Router = () => {
-  const { checkLogin } = useAuth();
-
-  useEffect(() => {
-    checkLogin();
-  });
-
   return (
     <Switch>
       <Route exact path="/">
