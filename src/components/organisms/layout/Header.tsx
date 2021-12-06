@@ -47,7 +47,7 @@ export const Header: VFC = memo(() => {
             <Link onClick={onClickHome}>ホーム</Link>
           </Box>
           <Box pr={4}>
-            <Link onClick={onClickLog}>記録</Link>
+            <Link onClick={onClickLog}>ログ</Link>
           </Box>
           <Box pr={4}>
             <Link onClick={onClickUsage}>使い方</Link>

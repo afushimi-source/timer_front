@@ -13,13 +13,13 @@ import { useRecoilValue } from "recoil";
 import { PrimaryButton } from "components/atoms/button/PrimaryButton";
 import { FormWrapper } from "components/molecules/FormWrapper";
 import { Timer } from "types/api/timer";
-import { useTimer } from "hooks/useTimer";
+import { useSetTime } from "hooks/useSetTime";
 import { useAuth } from "hooks/useAuth";
 import { timerState } from "globalState/atoms/timerAtom";
 
 export const Setting: VFC = memo(() => {
   const { checkLogin } = useAuth();
-  const { getTimer, postTimer } = useTimer();
+  const { getTimer, postTimer } = useSetTime();
   const timer = useRecoilValue(timerState);
   console.log(timer);
 

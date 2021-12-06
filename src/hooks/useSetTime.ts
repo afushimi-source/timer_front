@@ -8,7 +8,7 @@ import { timerState } from "globalState/atoms/timerAtom";
 import client from "lib/api/client";
 import { Timer } from "types/api/timer";
 
-export const useTimer = () => {
+export const useSetTime = () => {
   const setTimer = useSetRecoilState(timerState);
   const { showMessage } = useMessage();
   const history = useHistory();

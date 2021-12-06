@@ -7,14 +7,15 @@ import { loadingState } from "globalState/atoms/loadingAtom";
 type Props = {
   children: ReactNode;
   onClick?: () => void;
+  bg?: string;
 };
-export const PrimaryButton: VFC<Props> = memo((props) => {
+export const SecondaryButton: VFC<Props> = memo((props) => {
   const loading = useRecoilValue(loadingState);
-  const { children, onClick = () => {} } = props;
+  const { children, bg = "cyan.400", onClick = () => {} } = props;
   return (
     <Button
       type="submit"
-      bg="teal.400"
+      bg={bg}
       color="white"
       _hover={{ opacity: "0.8" }}
       isLoading={loading}

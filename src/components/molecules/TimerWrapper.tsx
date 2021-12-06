@@ -5,11 +5,11 @@ type Props = {
   children: ReactNode;
 };
 
-export const FormWrapper: VFC<Props> = memo((props) => {
+export const TimerWrapper: VFC<Props> = memo((props) => {
   const { children } = props;
   return (
-    <Flex align="center" justify="center" height="80vh">
-      <Box bg="while" w="sm" p={4} borderRadius="md" shadow="md">
+    <Flex align="center" justify="center" height={{ base: "45vh", md: "80vh" }}>
+      <Box bg="while" w="lg" p={4} borderRadius="md" shadow="lg">
         <Heading as="h1" size="lg" textAlign="center">
           Timer
         </Heading>
