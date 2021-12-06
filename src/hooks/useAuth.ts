@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import Cookies from "js-cookie";
 import { useHistory } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 import { LoginUser } from "types/api/loginUser";
 import { SignUpUser } from "types/api/signUpUser";
@@ -10,12 +10,11 @@ import client from "lib/api/client";
 import { userNameState } from "globalState/atoms/userNameAtom";
 import { isLoginState } from "globalState/atoms/isLoginAtom";
 import { loadingState } from "globalState/atoms/loadingAtom";
-import { cookiesHeader } from "lib/api/cookiesHeader";
 
 export const useAuth = () => {
   const { showMessage } = useMessage();
   const setUserName = useSetRecoilState(userNameState);
-  const setIsLogin = useSetRecoilState(isLoginState);
+  const [isLogin, setIsLogin] = useRecoilState(isLoginState);
   const setLoading = useSetRecoilState(loadingState);
   const history = useHistory();
 
@@ -91,6 +90,7 @@ export const useAuth = () => {
       })
       .then((res) => {
         if (res.status === 200) {
+          setIsLogin(false);
           Cookies.remove("_access_token");
           Cookies.remove("_client");
           Cookies.remove("_uid");
@@ -104,11 +104,11 @@ export const useAuth = () => {
         showMessage({ title: "ログアウトできませんでした", status: "error" });
         console.log(err);
       });
-  }, [history, showMessage]);
+  }, [history, showMessage, setIsLogin]);
 
   const checkLogin = useCallback(() => {
-    console.log("check");
-    console.log(cookiesHeader);
+    if (isLogin) return;
+
     client
       .get("auth/sessions", {
         headers: {
@@ -129,7 +129,7 @@ export const useAuth = () => {
       .catch((err) => {
         history.push("/");
       });
-  }, [history, setIsLogin, setUserName]);
+  }, [history, setIsLogin, setUserName, isLogin]);
 
   return { signup, login, logout, checkLogin };
 };
