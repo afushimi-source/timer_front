@@ -73,7 +73,11 @@ export const Home: VFC = memo(() => {
     };
 
     const startHandler = () => {
-      setTimestamp(expiryTimestamp);
+      time = new Date();
+      measureTime = isBreak ? timerValue.breakTime : timerValue.studyTime;
+      setTimestamp(
+        new Date(time.setSeconds(time.getSeconds() + measureTime * 60)),
+      );
       start();
     };
 
