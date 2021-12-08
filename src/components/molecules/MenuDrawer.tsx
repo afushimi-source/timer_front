@@ -25,7 +25,6 @@ export const MenuDrawer: VFC<Props> = memo((props) => {
   const onClickHome = () => history.push("/home");
   const onClickRecord = () => history.push("/home/record");
   const onClickSetting = () => history.push("/home/setting");
-  const onClickLogout = () => logout();
   return (
     <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
       <DrawerOverlay>

@@ -1,6 +1,5 @@
 import { useCallback } from "react";
-import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
-import { useHistory } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import Cookies from "js-cookie";
 
 import { useMessage } from "./useMessage";

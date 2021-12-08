@@ -14,7 +14,6 @@ export const Header: VFC = memo(() => {
   const onClickHome = () => history.push("/home");
   const onClickRecord = () => history.push("/home/record");
   const onClickSetting = () => history.push("/home/setting");
-  const onClickLogout = () => logout();
   return (
     <>
       <Flex
@@ -51,7 +50,7 @@ export const Header: VFC = memo(() => {
           <Box pr={4}>
             <Link onClick={onClickSetting}>設定</Link>
           </Box>
-          <Link onClick={onClickLogout}>ログアウト</Link>
+          <Link onClick={logout}>ログアウト</Link>
         </Flex>
         <MenuIconButton onOpen={onOpen} />
       </Flex>
