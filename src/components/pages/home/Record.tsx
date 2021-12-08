@@ -32,10 +32,10 @@ export const Record = () => {
         </Thead>
         <Tbody>
           {records.map((record, index) => (
-            <Tr>
-              <Td key={index}>{record.createdAt}</Td>
-              <Td key={index}>{record.studyTime}分</Td>
-              <Td key={index}>{record.breakTime}分</Td>
+            <Tr key={index}>
+              <Td>{record.createdAt}</Td>
+              <Td>{record.studyTime}分</Td>
+              <Td>{record.breakTime}分</Td>
             </Tr>
           ))}
         </Tbody>
