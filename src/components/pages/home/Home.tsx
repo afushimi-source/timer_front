@@ -19,7 +19,6 @@ export const Home: VFC = memo(() => {
   const timerValue = useRecoilValue(timerState);
   const [timestamp, setTimestamp] = useRecoilState(timestampState);
   const [isBreak, setIsBreak] = useRecoilState(isBreakState);
-  const [isPause, setIsPause] = useState(false);
 
   useEffect(() => {
     checkLogin();
@@ -27,6 +26,7 @@ export const Home: VFC = memo(() => {
   }, [checkLogin, getTimer]);
 
   const CountdownTimer = () => {
+    const [isPause, setIsPause] = useState(false);
     let time: Date = new Date();
     let measureTime = isBreak ? timerValue.breakTime : timerValue.studyTime;
     let expiryTimestamp: Date =
@@ -55,9 +55,9 @@ export const Home: VFC = memo(() => {
     });
 
     // 画面推移後もtimerを維持
-    if (isRunning) {
-      setTimestamp(expiryTimestamp);
-    }
+    // if (isRunning) {
+    //   setTimestamp(expiryTimestamp);
+    // }
 
     const reset = () => {
       time = new Date();
@@ -70,6 +70,11 @@ export const Home: VFC = memo(() => {
       setTimestamp(null);
       setIsBreak(false);
       setIsPause(false);
+    };
+
+    const startHandler = () => {
+      setTimestamp(expiryTimestamp);
+      start();
     };
 
     const pauseHandler = () => {
@@ -119,7 +124,7 @@ export const Home: VFC = memo(() => {
           ) : isPause ? (
             <PrimaryButton onClick={resumeHandler}>resume</PrimaryButton>
           ) : (
-            <PrimaryButton onClick={start}>start</PrimaryButton>
+            <PrimaryButton onClick={startHandler}>start</PrimaryButton>
           )}
           <SecondaryButton bg="gray.400" onClick={reset}>
             reset
