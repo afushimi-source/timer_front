@@ -12,8 +12,7 @@ export const Header: VFC = memo(() => {
   const { logout } = useAuth();
 
   const onClickHome = () => history.push("/home");
-  const onClickLog = () => history.push("/home/log");
-  const onClickUsage = () => history.push("/home/usage");
+  const onClickRecord = () => history.push("/home/record");
   const onClickSetting = () => history.push("/home/setting");
   const onClickLogout = () => logout();
   return (
@@ -47,15 +46,12 @@ export const Header: VFC = memo(() => {
             <Link onClick={onClickHome}>ホーム</Link>
           </Box>
           <Box pr={4}>
-            <Link onClick={onClickLog}>ログ</Link>
+            <Link onClick={onClickRecord}>記録</Link>
           </Box>
           <Box pr={4}>
-            <Link onClick={onClickUsage}>使い方</Link>
+            <Link onClick={onClickSetting}>設定</Link>
           </Box>
-          <Box pr={4}>
-            <Link onClick={onClickLogout}>ログアウト</Link>
-          </Box>
-          <Link onClick={onClickSetting}>設定</Link>
+          <Link onClick={onClickLogout}>ログアウト</Link>
         </Flex>
         <MenuIconButton onOpen={onOpen} />
       </Flex>

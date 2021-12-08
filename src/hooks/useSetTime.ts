@@ -16,9 +16,7 @@ export const useSetTime = () => {
   const history = useHistory();
 
   const getTimer = useCallback(() => {
-    if (timerValue.studyTime !== -1 || timerValue.breakTime !== -1)
-      return timerValue;
-    console.log("getTimer");
+    if (timerValue.studyTime !== -1 || timerValue.breakTime !== -1) return;
     client
       .get("timers", {
         headers: {
@@ -35,10 +33,10 @@ export const useSetTime = () => {
               breakTime: res.data.breakTime,
             });
           } else {
-            // setTimerValue({
-            //   studyTime: 0,
-            //   breakTime: 0,
-            // });
+            setTimerValue({
+              studyTime: 0,
+              breakTime: 0,
+            });
           }
         }
       })
@@ -49,6 +47,14 @@ export const useSetTime = () => {
 
   const postTimer = useCallback(
     (params: Timer) => {
+      if (timestamp !== null) {
+        showMessage({
+          title: "timerが開始されているため設定できません",
+          status: "error",
+        });
+        history.push("/home");
+        return;
+      }
       client
         .post("timers", params, {
           headers: {
@@ -63,18 +69,11 @@ export const useSetTime = () => {
               studyTime: res.data.studyTime,
               breakTime: res.data.breakTime,
             });
-            if (timestamp === null) {
-              showMessage({ title: "設定に成功しました", status: "success" });
-            } else {
-              showMessage({
-                title:
-                  "設定に成功しましたが既にtimerがスタートしているので次回から変更されます",
-                status: "success",
-              });
-            }
+            showMessage({ title: "設定に成功しました", status: "success" });
             history.push("/home");
           } else {
             showMessage({ title: "設定できません", status: "error" });
+            showMessage({ title: res.data.errors.join(""), status: "error" });
           }
         })
         .catch(() => {
