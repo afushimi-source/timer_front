@@ -118,7 +118,6 @@ export const useAuth = () => {
         },
       })
       .then((res) => {
-        console.log(res);
         if (res.data.isLogin === true) {
           setUserName(res.data.data.nickname);
           setIsLogin(true);

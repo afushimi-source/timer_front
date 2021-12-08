@@ -1,11 +1,13 @@
-import React, { VFC, memo, useState, useLayoutEffect } from "react";
-import { useRecoilValue } from "recoil";
+import React, { VFC, memo, useState, useEffect } from "react";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { Text, Box, Flex, Tag } from "@chakra-ui/react";
 import { useTimer } from "react-timer-hook";
 
 import { TimerWrapper } from "components/molecules/TimerWrapper";
 import { useSetTime } from "hooks/useSetTime";
 import { timerState } from "globalState/atoms/timerAtom";
+import { timestampState } from "globalState/atoms/timestampAtom";
+import { isBreakState } from "globalState/atoms/isBreakAtom";
 import { useAuth } from "hooks/useAuth";
 import { PrimaryButton } from "components/atoms/button/PrimaryButton";
 import { SecondaryButton } from "components/atoms/button/SecondaryButton";
@@ -15,15 +17,23 @@ export const Home: VFC = memo(() => {
   const { checkLogin } = useAuth();
   const { getTimer } = useSetTime();
   const timerValue = useRecoilValue(timerState);
-  const [isStudy, setIsStudy] = useState(true);
+  const [timestamp, setTimestamp] = useRecoilState(timestampState);
+  const [isBreak, setIsBreak] = useRecoilState(isBreakState);
 
-  const StudyTimer = () => {
+  useEffect(() => {
+    checkLogin();
+    getTimer();
+  }, [checkLogin, getTimer]);
+
+  const CountdownTimer = () => {
     const [isPause, setIsPause] = useState(false);
     let time: Date = new Date();
-    let measureTime = isStudy ? timerValue.studyTime : timerValue.breakTime;
-    let expiryTimestamp: Date = new Date(
-      time.setSeconds(time.getSeconds() + measureTime * 60),
-    );
+    let measureTime = isBreak ? timerValue.breakTime : timerValue.studyTime;
+    let expiryTimestamp: Date =
+      timestamp ||
+      new Date(time.setSeconds(time.getSeconds() + measureTime * 60));
+
+    const isAutoStart = isBreak || timestamp !== null ? true : false;
     const {
       seconds,
       minutes,
@@ -36,12 +46,18 @@ export const Home: VFC = memo(() => {
       restart,
     } = useTimer({
       expiryTimestamp,
-      autoStart: !isStudy,
+      autoStart: isAutoStart,
       onExpire: () => {
-        setIsStudy(!isStudy);
+        setTimestamp(null);
+        setIsBreak(!isBreak);
         setIsPause(false);
       },
     });
+
+    // 画面推移後もtimerを維持
+    if (isRunning) {
+      setTimestamp(expiryTimestamp);
+    }
 
     const reset = () => {
       time = new Date();
@@ -51,6 +67,8 @@ export const Home: VFC = memo(() => {
         ),
       );
       pause();
+      setTimestamp(null);
+      setIsBreak(false);
       setIsPause(false);
     };
 
@@ -70,6 +88,9 @@ export const Home: VFC = memo(() => {
 
     return (
       <Box style={{ textAlign: "center" }}>
+        <Flex justify="flex-start">
+          <Tag size="lg">{isBreak ? "休憩" : "計測"}</Tag>
+        </Flex>
         <Flex justify="center" fontSize="75px">
           {days !== 0 && (
             <Text>
@@ -108,17 +129,9 @@ export const Home: VFC = memo(() => {
     );
   };
 
-  useLayoutEffect(() => {
-    checkLogin();
-    getTimer();
-  }, []);
-
   return (
     <TimerWrapper>
-      <Flex justify="flex-start">
-        <Tag size="lg">{isStudy ? "計測" : "休憩時間"}</Tag>
-      </Flex>
-      <StudyTimer />
+      <CountdownTimer />
     </TimerWrapper>
   );
 });
