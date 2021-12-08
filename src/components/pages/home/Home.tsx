@@ -19,6 +19,7 @@ export const Home: VFC = memo(() => {
   const timerValue = useRecoilValue(timerState);
   const [timestamp, setTimestamp] = useRecoilState(timestampState);
   const [isBreak, setIsBreak] = useRecoilState(isBreakState);
+  const [isPause, setIsPause] = useState(false);
 
   useEffect(() => {
     checkLogin();
@@ -26,7 +27,6 @@ export const Home: VFC = memo(() => {
   }, [checkLogin, getTimer]);
 
   const CountdownTimer = () => {
-    const [isPause, setIsPause] = useState(false);
     let time: Date = new Date();
     let measureTime = isBreak ? timerValue.breakTime : timerValue.studyTime;
     let expiryTimestamp: Date =
@@ -48,9 +48,9 @@ export const Home: VFC = memo(() => {
       expiryTimestamp,
       autoStart: isAutoStart,
       onExpire: () => {
-        setTimestamp(null);
         setIsBreak(!isBreak);
         setIsPause(false);
+        setTimestamp(null);
       },
     });
 
