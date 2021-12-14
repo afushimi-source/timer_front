@@ -27,6 +27,9 @@ export const Login: VFC = memo(() => {
   };
   const onClickSignup = useCallback(() => history.push("/signup"), [history]);
 
+  console.log(process.env.REACT_APP_URL);
+  console.log(process.env.REACT_APP_DEV_API_URL);
+
   return (
     <FormWrapper>
       <form onSubmit={handleSubmit(onSubmitLoginUser)}>
