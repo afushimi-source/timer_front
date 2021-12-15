@@ -55,7 +55,7 @@ export const useAuth = () => {
     (params: LoginUser) => {
       setLoading(true);
       client
-        .post("auth/sign_in/", params)
+        .post("auth/sign_in", params)
         .then((res) => {
           if (res.status === 200) {
             console.log(res.headers);
