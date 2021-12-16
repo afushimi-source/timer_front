@@ -34,7 +34,6 @@ export const Sighup = () => {
 
   const onClickLogin = useCallback(() => history.push("/"), [history]);
 
-  console.log(errors);
   return (
     <FormWrapper>
       <form onSubmit={handleSubmit(onSubmitUser)}>
