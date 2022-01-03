@@ -1,7 +1,5 @@
 # timer_front
 
-https://timerlog.click/
-
 ## setup
 
 yarn install
